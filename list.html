@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>作品列表</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <h2 id="categoryTitle">随笔</h2>
+        <div id="workList"></div>
+        <a href="index.html" class="btn" style="margin-top:20px;">返回首页</a>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get('category');
+        const titles = { essay: '随笔', poem: '诗', novel: '小说' };
+        document.getElementById('categoryTitle').innerText = titles[category] || '作品';
+
+        fetch('/api/works?category=' + category)
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('workList');
+                if (data.length === 0) {
+                    list.innerHTML = '<p style="color:#999;">暂无作品</p>';
+                    return;
+                }
+                data.forEach(work => {
+                    const div = document.createElement('div');
+                    div.style.padding = '12px 0';
+                    div.innerHTML = `<a href="detail.html?id=${work.id}" style="font-size:18px;">${work.title}</a>
+                                     <span style="color:#999; float:right;">${new Date(work.createdAt).toLocaleDateString()}</span>`;
+                    list.appendChild(div);
+                });
+            });
+    </script>
+</body>
+</html>

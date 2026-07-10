@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>作品详情</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <h2 id="workTitle"></h2>
+        <p style="color:#999;" id="workDate"></p>
+        <hr>
+        <div id="workContent" style="white-space: pre-wrap; line-height: 1.8;"></div>
+        <a href="javascript:history.back()" class="btn" style="margin-top:20px;">返回</a>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        fetch('/api/works/' + id)
+            .then(res => res.json())
+            .then(work => {
+                document.getElementById('workTitle').innerText = work.title;
+                document.getElementById('workDate').innerText = new Date(work.createdAt).toLocaleDateString();
+                document.getElementById('workContent').innerText = work.content;
+            })
+            .catch(() => {
+                document.body.innerHTML = '<p>作品未找到</p>';
+            });
+    </script>
+</body>
+</html>

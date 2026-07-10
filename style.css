@@ -1,0 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: "Microsoft YaHei", "苹方", "PingFang SC", sans-serif;
+    background: #ffffff;
+    color: #3e3e3e;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+/* 木色边框卡片 */
+.card {
+    border: 2px solid #b08968;  /* 浅木色 */
+    border-radius: 4px;
+    padding: 24px;
+    margin: 20px 0;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(139,90,43,0.05);
+}
+/* 按钮风格 */
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border: 2px solid #b08968;
+    color: #b08968;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: all 0.2s;
+    background: transparent;
+    cursor: pointer;
+}
+.btn:hover {
+    background: #b08968;
+    color: #fff;
+}
+/* 木色分割线 */
+hr {
+    border: none;
+    border-top: 1px solid #ddc7a8;
+    margin: 30px 0;
+}
+h1 {
+    font-size: 2.2em;
+    font-weight: 300;
+    color: #6b4f3c;
+    margin-bottom: 20px;
+}
+h2 {
+    font-weight: 400;
+    color: #6b4f3c;
+    margin-bottom: 15px;
+}
+a {
+    color: #6b4f3c;
+    text-decoration: none;
+}
+a:hover {
+    border-bottom: 1px dotted #b08968;
+}

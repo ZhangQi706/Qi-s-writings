@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>管理后台 - 第三片天空</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        textarea, input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccb69b;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        .work-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        button {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>添加 / 编辑作品</h2>
+        <input type="hidden" id="editId">
+        <input type="text" id="title" placeholder="作品标题">
+        <select id="category">
+            <option value="essay">随笔</option>
+            <option value="poem">诗</option>
+            <option value="novel">小说</option>
+        </select>
+        <textarea id="content" rows="12" placeholder="作品内容..."></textarea>
+        <button onclick="saveWork()" class="btn">保存</button>
+        <button onclick="clearForm()" class="btn" style="border-color:#ccc; color:#888;">清空</button>
+    </div>
+
+    <div class="card">
+        <h2>所有作品</h2>
+        <div id="allWorks"></div>
+    </div>
+
+    <a href="index.html" class="btn" style="margin-top:20px;">返回首页</a>
+
+    <script>
+        function loadWorks() {
+            fetch('/api/works')
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('allWorks');
+                    if (data.length === 0) {
+                        container.innerHTML = '<p style="color:#999;">暂无作品</p>';
+                        return;
+                    }
+                    container.innerHTML = data.map(w => `
+                        <div class="work-item">
+                            <strong>${w.title}</strong> (${w.category})
+                            <span style="float:right;">
+                                <a href="#" onclick="editWork(${w.id})">编辑</a> |
+                                <a href="#" onclick="deleteWork(${w.id})">删除</a>
+                            </span>
+                        </div>
+                    `).join('');
+                });
+        }
+
+        function saveWork() {
+            const id = document.getElementById('editId').value;
+            const title = document.getElementById('title').value.trim();
+            const category = document.getElementById('category').value;
+            const content = document.getElementById('content').value.trim();
+            if (!title || !content) return alert('请填写标题和内容');
+
+            const url = id ? `/api/works/${id}` : '/api/works';
+            const method = id ? 'PUT' : 'POST';
+            fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, category, content })
+            }).then(() => {
+                clearForm();
+                loadWorks();
+            });
+        }
+
+        function editWork(id) {
+            fetch('/api/works/' + id)
+                .then(res => res.json())
+                .then(work => {
+                    document.getElementById('editId').value = work.id;
+                    document.getElementById('title').value = work.title;
+                    document.getElementById('category').value = work.category;
+                    document.getElementById('content').value = work.content;
+                });
+        }
+
+        function deleteWork(id) {
+            if (!confirm('确定删除？')) return;
+            fetch('/api/works/' + id, { method: 'DELETE' })
+                .then(() => loadWorks());
+        }
+
+        function clearForm() {
+            document.getElementById('editId').value = '';
+            document.getElementById('title').value = '';
+            document.getElementById('content').value = '';
+        }
+
+        loadWorks();
+    </script>
+</body>
+</html>
